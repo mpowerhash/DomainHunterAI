@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+  <!-- Crown — Basquiat signature -->
+  <polygon points="90,6 84,22 93,16 100,24 107,16 116,22 110,6"
+           fill="#FFD700" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Body — green, thick wobbly outline -->
+  <path d="M32,64 C38,42 68,32 108,40 C140,46 164,54 178,59
+           C164,65 140,73 108,80 C68,88 38,82 32,64 Z"
+        fill="#3DAA4F" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+
+  <!-- Sword — purple -->
+  <path d="M178,59 L200,53 L198,63 L178,65 Z"
+        fill="#8B2FC9" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Tail — purple crescent -->
+  <path d="M32,64 C20,44 8,38 6,56 C4,72 18,82 32,64 Z"
+        fill="#8B2FC9" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Dorsal fin — green -->
+  <path d="M98,40 C92,20 102,10 112,16 C116,28 114,38 108,40 Z"
+        fill="#52C065" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Pectoral fin — green -->
+  <path d="M128,72 C134,84 144,88 138,76 Z"
+        fill="#52C065" stroke="#111" stroke-width="2"/>
+
+  <!-- Eye -->
+  <circle cx="160" cy="57" r="6" fill="white" stroke="#111" stroke-width="2.5"/>
+  <circle cx="162" cy="57" r="3" fill="#111"/>
+
+  <!-- Basquiat scratchy body lines -->
+  <line x1="75" y1="47" x2="72" y2="77" stroke="#111" stroke-width="2" opacity="0.5"/>
+  <line x1="98" y1="43" x2="95" y2="77" stroke="#111" stroke-width="2" opacity="0.5"/>
+  <line x1="120" y1="43" x2="117" y2="76" stroke="#111" stroke-width="2" opacity="0.5"/>
+  <line x1="142" y1="47" x2="139" y2="73" stroke="#111" stroke-width="2" opacity="0.5"/>
+
+  <!-- Purple accent strokes -->
+  <path d="M82,53 C79,59 79,66 83,71" stroke="#8B2FC9" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M108,49 C105,56 105,65 109,71" stroke="#8B2FC9" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>

@@ -703,12 +703,33 @@ def check_rdap(domains: list, max_workers: int = 10) -> dict:
 # Streamlit UI
 # ---------------------------------------------------------------------------
 
+def _logo_html(width: int = 80) -> str:
+    """Embed logo.svg as a base64 data URL so it works on Streamlit Cloud."""
+    import base64
+    try:
+        with open("logo.svg", "r") as f:
+            svg = f.read()
+        b64 = base64.b64encode(svg.encode()).decode()
+        return f'<img src="data:image/svg+xml;base64,{b64}" width="{width}" style="margin-top:4px"/>'
+    except Exception:
+        return ""
+
+
 def main():
     st.set_page_config(page_title="DomainHunterAI", page_icon="🔍", layout="wide")
-    st.title("🔍 DomainHunterAI")
+
+    st.title("DomainHunterAI")
     st.caption("Find short, brandable domains for any industry — scored and availability-checked.")
 
-    # ---- Status row --------------------------------------------------------
+    # ---- Logo row — only right column, keeps status boxes level ------------
+    _, _, logo_col = st.columns(3)
+    with logo_col:
+        st.markdown(
+            f'<div style="text-align:center">{_logo_html(75)}</div>',
+            unsafe_allow_html=True,
+        )
+
+    # ---- Status row — all three boxes at the same height ------------------
     col1, col2, col3 = st.columns(3)
     with col1:
         if USE_GODADDY:
