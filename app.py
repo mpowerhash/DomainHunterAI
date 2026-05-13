@@ -754,7 +754,10 @@ def main():
             ["Noun", "Verb", "Adjective", "Adverb"],
             default=[],
             help="Only show words of these types. Leave empty for all.",
+            disabled=not real_words_only,
         )
+        if not real_words_only:
+            st.caption("Part of speech unavailable for invented words.")
 
         st.divider()
         result_count = st.slider("Candidates to generate", min_value=20, max_value=500, value=100)
