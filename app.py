@@ -252,6 +252,53 @@ def generate_word_variations(base_words: list, variation_types: list) -> list:
             and word_frequency(v, "en") >= 1e-7]
 
 # ---------------------------------------------------------------------------
+# OpenAI creative name generator — used when real_words_only is OFF + key present
+# ---------------------------------------------------------------------------
+
+def generate_with_openai(themes: list, syllables: int, syl_exact: bool,
+                          count: int, start_letter: str = None) -> list:
+    """
+    Asks GPT-4o-mini to invent brandable domain names (think Zapier, Figma, Notion).
+    Returns a list of clean lowercase names that pass the syllable filter.
+    Falls back to empty list on any error — caller uses _generate_brandable_fill as backup.
+    """
+    try:
+        from openai import OpenAI
+        client  = OpenAI(api_key=OPENAI_API_KEY)
+        syl_rule   = f"exactly {syllables} syllables" if syl_exact else f"up to {syllables} syllables"
+        letter_rule = f"\n- Every name MUST start with the letter '{start_letter.upper()}'" if start_letter else ""
+        prompt = f"""Generate {count} creative invented single-word brandable domain names for a {', '.join(themes)} company.
+
+Rules:
+- One word only — no spaces, no hyphens, no numbers
+- {syl_rule}
+- 4–12 characters
+- Easy to say and remember out loud
+- Sounds modern and premium (like Zapier, Figma, Notion, Slack, Vanta, Ripple){letter_rule}
+- Do NOT use real dictionary words
+- Return ONLY the words, one per line, nothing else"""
+
+        resp  = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.9,
+        )
+        raw   = resp.choices[0].message.content.strip().split("\n")
+        names = []
+        seen  = set()
+        for line in raw:
+            name = re.sub(r"[^a-z]", "", line.strip().lower())
+            if (name and name not in seen
+                    and is_valid_candidate(name, syllables, syl_exact, 1)
+                    and (not start_letter or name.startswith(start_letter.lower()))):
+                seen.add(name)
+                names.append(name)
+        return names
+    except Exception:
+        return []
+
+
+# ---------------------------------------------------------------------------
 # Brandable fill — invented names when real_words_only is OFF and pool runs short
 # ---------------------------------------------------------------------------
 
@@ -796,17 +843,28 @@ def main():
                 ]
             else:
                 # Invented mode: REPLACE the whole candidate list with brandable names.
-                # Use short words from the pool as roots so we have enough variety
-                # to fill large counts (not just the ~14 theme seed words).
-                pool_for_roots = build_dictionary_pool(tuple(sorted(themes)), exact_syl)
-                short_roots    = [w for w in pool_for_roots if 2 <= len(w) <= 5][:200]
-                brandable_names = _generate_brandable_fill(
-                    themes, exact_syl, syl_exact,
-                    result_count * 4,   # 4x so availability filter still leaves result_count
-                    set(),
-                    extra_roots=short_roots,
-                    start_letter=start_letter if letter_enabled else None,
-                )
+                # If OpenAI key is present, use GPT-4o-mini for creative names (Zapier-style).
+                # Always top up with rule-based fill so count is met even if AI falls short.
+                ltr = start_letter if letter_enabled else None
+
+                if USE_OPENAI:
+                    with st.spinner("Generating creative names with AI…"):
+                        ai_names = generate_with_openai(
+                            themes, exact_syl, syl_exact, result_count * 2, ltr
+                        )
+                else:
+                    ai_names = []
+
+                # Rule-based fill for any gap
+                pool_for_roots  = build_dictionary_pool(tuple(sorted(themes)), exact_syl)
+                short_roots     = [w for w in pool_for_roots if 2 <= len(w) <= 5][:200]
+                fill_needed     = max(result_count * 4 - len(ai_names), 0)
+                fill_names      = _generate_brandable_fill(
+                    themes, exact_syl, syl_exact, fill_needed,
+                    set(ai_names), extra_roots=short_roots, start_letter=ltr,
+                ) if fill_needed else []
+
+                brandable_names = ai_names + fill_names
                 disp_theme = ", ".join(themes)
                 candidates = []
                 for name in brandable_names:
