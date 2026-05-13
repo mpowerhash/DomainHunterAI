@@ -1,122 +1,68 @@
 # DomainHunterAI
 
-Find short, brandable domains for any industry — fast.
+Find short, brandable, available domains for any industry — scored and availability-checked.
 
-Enter a theme (solar, biology, roofing, AI, finance, health…), set your filters, and get a scored list of domain ideas with CSV export.
+**Live app:** https://domainhunterai.streamlit.app
 
 ---
 
-## Quick Start
+## What it does
 
-**1. Install dependencies**
+Enter a theme (solar, biology, roofing, AI, finance...), set your filters, and get a scored list of domain candidates with live availability checking via RDAP.
+
+---
+
+## Run locally
 
 ```bash
 pip install -r requirements.txt
-```
-
-**2. Run the app**
-
-```bash
 streamlit run app.py
 ```
 
-The app opens at `http://localhost:8501` in your browser.
+Opens at http://localhost:8501
 
 ---
 
-## Mock Mode (no API keys needed)
+## Push updates
 
-The app runs fully without any API keys.
-
-In mock mode:
-- Domain candidates are generated from a built-in themed word bank
-- Prices are realistic estimates (not live data)
-- Scoring uses a rule-based engine
-- A blue banner at the top confirms mock mode is active
-
----
-
-## Optional: Add API Keys
-
-Copy `.env.example` to `.env` and fill in the keys you have.
-
-```bash
-cp .env.example .env
-```
-
-### OpenAI (enables AI domain generation)
-
-```
-OPENAI_API_KEY=sk-...
-```
-
-When set, the app sends your theme and filters to `gpt-4o-mini` to generate smarter, more creative domain ideas.
-
-### Namecheap (enables live availability checks)
-
-```
-NAMECHEAP_API_USER=your_username
-NAMECHEAP_API_KEY=your_api_key
-NAMECHEAP_USERNAME=your_username
-NAMECHEAP_CLIENT_IP=your_whitelisted_ip
-```
-
-When all four vars are set, the app checks real-time domain availability via the Namecheap API. Pricing remains estimated for MVP.
-
-To get Namecheap API access: log in to Namecheap → Profile → Tools → API Access.
+Double-click `push_to_github.bat` → type what you changed → Streamlit updates in ~60 seconds.
 
 ---
 
 ## Filters
 
-| Filter | Default | Description |
+| Filter | Default | Options |
 |---|---|---|
-| Theme / Industry | solar energy | Free text: biology, roofing, AI, finance… |
-| Tone or style | premium, trustworthy | Guides AI generation |
-| TLD | .com | .com / .io / .co / .net / .org |
-| Max price | $20,000 | Filters out expensive domains |
-| Max syllables | 3 | 1–5 |
-| Domain type | any | real word / brandable / any |
-| Results | 20 | 5–50 |
+| Theme | solar energy | Any text, comma-separated |
+| TLD | .com | .com .io .co .net .org |
+| Syllables | 2 | 1-4, exact or max |
+| Max price | $20,000 | Any amount |
+| Word count | 1 | 1 (single) or 2 (compound) |
+| Available only | ON | Toggle |
+| Real English words only | ON | Toggle — OFF = invented/brandable |
+| Part of speech | All | Noun / Verb / Adjective / Adverb |
+| Candidates | 100 | 20-500 slider |
+| Letter Starter | OFF | Pick any letter A-Z |
 
 ---
 
-## Output Table
+## API Keys (.env)
 
-| Column | Description |
-|---|---|
-| domain | Full domain name with TLD |
-| theme | Theme you searched |
-| tld | Top-level domain |
-| estimated_price | Mock or live price in USD |
-| syllables | Syllable count |
-| word_count | Number of words |
-| type | real word / brandable / any |
-| score | 0–100 quality score |
-| notes | Short explanation of score |
-| source | mock / openai / namecheap |
+```
+GODADDY_API_KEY=       # wired up, currently blocked
+GODADDY_API_SECRET=
+OPENAI_API_KEY=        # optional — upgrades invented word mode to AI generation
+NAMECHEAP_API_USER=    # optional
+NAMECHEAP_API_KEY=
+NAMECHEAP_USERNAME=
+NAMECHEAP_CLIENT_IP=
+```
 
-Rows are color-coded by score (green = high, red = low).
+App works without any keys. RDAP availability checking is always active.
 
 ---
 
-## CSV Export
-
-Click **Export CSV** after generating results to download the table as a `.csv` file.
-
----
-
-## Legal Disclaimer
+## Legal
 
 Domain suggestions are generated automatically and are not legal advice.
-Always run a full trademark search before purchasing any domain.
-This tool does not check trademark databases (USPTO, WIPO).
-
----
-
-## Future Additions (not built yet)
-
-- GoDaddy API integration
-- Aftermarket domain pricing
-- Trademark risk flags
-- Daily automated scans
+Always run a trademark search before purchasing any domain.
